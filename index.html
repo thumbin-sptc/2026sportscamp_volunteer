@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IEP 작성 도우미</title>
+  <meta name="description" content="초등학교 특수교육대상학생 개별화교육계획(IEP) 작성 도우미" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+  <div class="p-4 md:p-8">
+    <div class="max-w-6xl mx-auto">
+      <!-- 헤더 -->
+      <div class="mb-6 text-center">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">📋 개별화교육계획(IEP) 작성 도우미</h1>
+        <p class="text-gray-600">초등학교(공통교육과정) 특수교육대상학생 개별화교육계획 작성 지원도구</p>
+      </div>
+
+      <!-- 로딩 -->
+      <div id="loading-view" class="bg-white rounded-xl p-6 shadow-sm text-center">
+        <i data-lucide="loader-2" class="animate-spin mx-auto text-indigo-600 mb-3" style="width:32px;height:32px"></i>
+        <p class="text-gray-600">성취기준 데이터를 불러오는 중...</p>
+      </div>
+
+      <!-- 에러 -->
+      <div id="error-view" class="hidden bg-red-50 border border-red-200 rounded-xl p-6">
+        <p class="text-red-700 font-medium">⚠️ 성취기준 데이터를 불러올 수 없습니다.</p>
+        <p id="error-msg" class="text-sm text-red-600 mt-2"></p>
+        <p class="text-sm text-red-600 mt-2">인터넷 연결을 확인하거나, 잠시 후 다시 시도해 주세요.</p>
+      </div>
+
+      <!-- 메인 -->
+      <div id="main-view" class="hidden">
+        <!-- 탭 -->
+        <div class="flex gap-2 mb-6 bg-white rounded-xl p-2 shadow-sm">
+          <button id="tab-iep" class="tab-btn flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium bg-indigo-600 text-white shadow-md">
+            <i data-lucide="file-text" style="width:20px;height:20px"></i> IEP 작성
+          </button>
+          <button id="tab-checklist" class="tab-btn flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium text-gray-600 hover:bg-gray-100">
+            <i data-lucide="check-square" style="width:20px;height:20px"></i> 진보점검 체크리스트
+          </button>
+        </div>
+
+        <!-- IEP 탭 -->
+        <div id="iep-panel" class="space-y-6">
+          <!-- 액션바 -->
+          <div class="bg-white rounded-xl p-3 shadow-sm flex flex-wrap items-center gap-2">
+            <button onclick="openSaveDialog('iep')" class="flex items-center gap-1.5 px-3 py-2 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200">
+              <i data-lucide="save" style="width:16px;height:16px"></i> 저장
+            </button>
+            <button onclick="openLoadDialog('iep')" class="flex items-center gap-1.5 px-3 py-2 text-sm bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200">
+              <i data-lucide="folder-open" style="width:16px;height:16px"></i> 불러오기 (<span id="iep-saved-count">0</span>)
+            </button>
+            <button onclick="resetForm('iep')" class="flex items-center gap-1.5 px-3 py-2 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200">
+              <i data-lucide="rotate-ccw" style="width:16px;height:16px"></i> 초기화
+            </button>
+            <span id="iep-status" class="ml-2 text-sm text-indigo-600 font-medium hidden"></span>
+          </div>
+
+          <!-- 입력 폼 -->
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h2 class="text-xl font-bold mb-4">📝 학생 정보 입력</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label class="block text-sm font-medium mb-1">학기 *</label>
+                <input id="f-semester" type="text" placeholder="예: 2026학년도 1학기" class="w-full px-3 py-2 border rounded-lg" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">학년 *</label>
+                <select id="f-grade" class="w-full px-3 py-2 border rounded-lg">
+                  <option value="">선택</option>
+                  <option value="1">초등학교 1학년</option>
+                  <option value="2">초등학교 2학년</option>
+                  <option value="3">초등학교 3학년</option>
+                  <option value="4">초등학교 4학년</option>
+                  <option value="5">초등학교 5학년</option>
+                  <option value="6">초등학교 6학년</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2">영역 유형 *</label>
+              <div class="flex gap-3">
+                <button type="button" id="type-curriculum" class="type-btn flex-1 py-2 px-4 rounded-lg border-2 border-indigo-600 bg-indigo-50 text-indigo-700 font-medium">📚 교과</button>
+                <button type="button" id="type-functional" class="type-btn flex-1 py-2 px-4 rounded-lg border-2 border-gray-200">🌱 생활기능</button>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div id="subject-wrap">
+                <label class="block text-sm font-medium mb-1">교과 *</label>
+                <select id="f-subject" disabled class="w-full px-3 py-2 border rounded-lg disabled:bg-gray-100">
+                  <option value="">먼저 학년 선택</option>
+                </select>
+              </div>
+              <div id="custom-subject-wrap" class="hidden">
+                <label class="block text-sm font-medium mb-1">생활기능 영역 *</label>
+                <input id="f-custom-subject" type="text" placeholder="예: 사회성, 의사소통" class="w-full px-3 py-2 border rounded-lg" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">세부 영역 (선택)</label>
+                <input id="f-area" type="text" placeholder="예: 읽기, 수와 연산" class="w-full px-3 py-2 border rounded-lg" />
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label class="block text-sm font-medium mb-1">강점 *</label>
+                <textarea id="f-strengths" rows="4" class="w-full px-3 py-2 border rounded-lg"></textarea>
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">요구 *</label>
+                <textarea id="f-needs" rows="4" class="w-full px-3 py-2 border rounded-lg"></textarea>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label class="block text-sm font-medium mb-1">이전 평가/검사 결과 (선택)</label>
+                <textarea id="f-assessment" rows="3" class="w-full px-3 py-2 border rounded-lg"></textarea>
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">추가 메모 (선택)</label>
+                <textarea id="f-notes" rows="3" class="w-full px-3 py-2 border rounded-lg"></textarea>
+              </div>
+            </div>
+            <div id="iep-error" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+              <i data-lucide="alert-circle" class="text-red-600 flex-shrink-0 mt-0.5" style="width:18px;height:18px"></i>
+              <p id="iep-error-msg" class="text-sm text-red-700"></p>
+            </div>
+            <button id="generate-btn" onclick="generateIEP()" class="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-indigo-700 disabled:bg-gray-400 flex items-center justify-center gap-2">
+              <span id="generate-text">✨ IEP 생성하기</span>
+            </button>
+          </div>
+
+          <!-- 결과 -->
+          <div id="iep-result" class="hidden"></div>
+        </div>
+
+        <!-- 체크리스트 탭 -->
+        <div id="checklist-panel" class="hidden space-y-6">
+          <div class="bg-white rounded-xl p-3 shadow-sm flex flex-wrap items-center gap-2">
+            <button onclick="openSaveDialog('checklist')" class="flex items-center gap-1.5 px-3 py-2 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200">
+              <i data-lucide="save" style="width:16px;height:16px"></i> 저장
+            </button>
+            <button onclick="openLoadDialog('checklist')" class="flex items-center gap-1.5 px-3 py-2 text-sm bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200">
+              <i data-lucide="folder-open" style="width:16px;height:16px"></i> 불러오기 (<span id="cl-saved-count">0</span>)
+            </button>
+            <button onclick="resetForm('checklist')" class="flex items-center gap-1.5 px-3 py-2 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200">
+              <i data-lucide="rotate-ccw" style="width:16px;height:16px"></i> 초기화
+            </button>
+            <span id="cl-status" class="ml-2 text-sm text-indigo-600 font-medium hidden"></span>
+          </div>
+
+          <div class="bg-white rounded-xl p-6 shadow-sm">
+            <h2 class="text-xl font-bold mb-2">✅ 진보점검 체크리스트 생성</h2>
+            <p class="text-sm text-gray-600 mb-4">IEP 단기목표의 달성도를 회기별로 점검합니다.</p>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium mb-1">학생 정보 (선택)</label>
+                <input id="cl-student-info" type="text" placeholder="예: 3학년 1반" class="w-full px-3 py-2 border rounded-lg" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">과목/영역 *</label>
+                <input id="cl-subject" type="text" placeholder="예: 국어(읽기), 사회성" class="w-full px-3 py-2 border rounded-lg" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">장기목표 *</label>
+                <textarea id="cl-long-goal" rows="2" class="w-full px-3 py-2 border rounded-lg"></textarea>
+              </div>
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block text-sm font-medium">단기목표 *</label>
+                  <button onclick="addShortGoal()" class="flex items-center gap-1 text-sm text-indigo-600">
+                    <i data-lucide="plus" style="width:14px;height:14px"></i> 추가
+                  </button>
+                </div>
+                <div id="cl-short-goals" class="space-y-2"></div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium mb-1">평가 주기</label>
+                  <select id="cl-period" class="w-full px-3 py-2 border rounded-lg">
+                    <option value="주별">주별</option>
+                    <option value="격주">격주</option>
+                    <option value="월별" selected>월별</option>
+                    <option value="분기별">분기별</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1">평가 회기 수</label>
+                  <select id="cl-sessions" class="w-full px-3 py-2 border rounded-lg">
+                    <option value="2">2회기</option>
+                    <option value="3">3회기</option>
+                    <option value="4" selected>4회기</option>
+                    <option value="5">5회기</option>
+                    <option value="6">6회기</option>
+                    <option value="8">8회기</option>
+                    <option value="10">10회기</option>
+                    <option value="12">12회기</option>
+                  </select>
+                </div>
+              </div>
+              <button onclick="generateChecklist()" class="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-indigo-700">📋 체크리스트 생성하기</button>
+            </div>
+          </div>
+
+          <div id="cl-result" class="hidden"></div>
+        </div>
+      </div>
+
+      <!-- 푸터 -->
+      <div class="mt-8 text-center text-sm text-gray-500 space-y-1">
+        <p>※ 본 도구는 IEP 초안 작성을 돕는 보조 도구입니다. 실제 IEP는 교사의 전문적 판단에 따라 수정·보완하여 사용해 주세요.</p>
+        <p class="text-gray-400">만든 사람: 김점례 (instagram <a href="https://www.instagram.com/jeomrye_sptc" target="_blank" rel="noopener noreferrer" class="text-indigo-500 hover:underline">@jeomrye_sptc</a>)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 다이얼로그 -->
+  <div id="dialog-bg" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onclick="closeDialog(event)">
+    <div class="bg-white rounded-xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="dialog-title" class="text-lg font-bold"></h3>
+        <button onclick="closeDialog()"><i data-lucide="x" style="width:20px;height:20px"></i></button>
+      </div>
+      <div id="dialog-body"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
