@@ -1,232 +1,1092 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IEP 작성 도우미</title>
-  <meta name="description" content="초등학교 특수교육대상학생 개별화교육계획(IEP) 작성 도우미" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 장애학생 스포츠체험 가족캠프 자원봉사자 신청서</title>
+<style>
+  * { box-sizing: border-box; }
+  :root {
+    --bg: #f7f8fa;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --accent: #2563eb;
+    --accent-soft: #eff6ff;
+    --danger: #dc2626;
+    --warn-bg: #fef2f2;
+    --ok: #059669;
+    --info-bg: #f9fafb;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "맑은 고딕", "Malgun Gothic", sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 20px 16px 80px;
+  }
+
+  /* 상단 안내 박스 */
+  .header-info {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 16px;
+  }
+  .header-info h1 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .header-info .meta {
+    color: var(--muted);
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+  .header-info .meta strong { color: var(--text); font-weight: 600; }
+
+  .notice {
+    background: var(--accent-soft);
+    border: 1px solid #dbeafe;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 22px;
+    color: #1e3a8a;
+    font-size: 13.5px;
+    line-height: 1.7;
+  }
+
+  /* 진행 표시 */
+  .stepper {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+  .step-pill {
+    flex: 1;
+    padding: 10px 8px;
+    border-radius: 999px;
+    background: #eef0f3;
+    color: var(--muted);
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid transparent;
+    transition: all 0.18s;
+  }
+  .step-pill.active {
+    background: var(--accent);
+    color: #fff;
+  }
+  .step-pill.done {
+    background: #dbeafe;
+    color: var(--accent);
+  }
+
+  /* 카드 */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 22px;
+    margin-bottom: 16px;
+  }
+  .card h2 {
+    margin: 0 0 18px;
+    font-size: 17px;
+    color: var(--text);
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  label.field-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .req { color: var(--danger); margin-left: 2px; }
+  .hint {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 5px;
+    line-height: 1.5;
+  }
+
+  input[type="text"],
+  input[type="tel"],
+  input[type="email"],
+  select,
+  textarea {
+    width: 100%;
+    height: 38px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: 14.5px;
+    font-family: inherit;
+    background: #fff;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  textarea {
+    height: auto;
+    min-height: 92px;
+    resize: vertical;
+    line-height: 1.6;
+    padding: 10px 12px;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  }
+  input.invalid, select.invalid, textarea.invalid {
+    border-color: var(--danger);
+    background: var(--warn-bg);
+  }
+
+  .row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 520px) {
+    .row-2 { grid-template-columns: 1fr; }
+  }
+
+  /* 라디오·체크 */
+  .radio-group, .check-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .radio-item, .check-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    background: #fff;
+    transition: all 0.12s;
+  }
+  .radio-item:hover, .check-item:hover { border-color: #c7d2fe; background: #fafbff; }
+  .radio-item input, .check-item input {
+    margin-right: 10px;
+    margin-top: 3px;
+    accent-color: var(--accent);
+  }
+  .radio-item.checked, .check-item.checked {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  /* 소속 그룹 */
+  .affiliation-grid {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 520px) {
+    .affiliation-grid { grid-template-columns: 1fr; }
+  }
+
+  /* 동의 박스 */
+  .agree-box {
+    background: var(--info-bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: #374151;
+    margin-bottom: 10px;
+  }
+  .agree-box p { margin: 0 0 6px; }
+  .agree-box ul { margin: 4px 0 6px 18px; padding: 0; }
+  .agree-box li { margin-bottom: 3px; }
+  .agree-check {
+    display: flex;
+    align-items: center;
+    padding: 11px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14.5px;
+    background: #fff;
+  }
+  .agree-check.checked {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .agree-check input {
+    margin-right: 10px;
+    accent-color: var(--accent);
+    transform: scale(1.1);
+  }
+
+  /* 버튼 */
+  .nav {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+  button {
+    font-family: inherit;
+    font-size: 15px;
+    padding: 12px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--text);
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  button.primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  button.primary:hover { background: #1d4ed8; }
+  button:hover { background: #f3f4f6; }
+  button.primary:hover { background: #1d4ed8; }
+  button.big {
+    width: 100%;
+    padding: 16px;
+    font-size: 16px;
+  }
+
+  /* 요약 */
+  .summary {
+    background: var(--info-bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px 18px;
+    font-size: 13.5px;
+    line-height: 1.8;
+  }
+  .summary .sm-section { margin-bottom: 14px; }
+  .summary .sm-section:last-child { margin-bottom: 0; }
+  .summary .sm-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent);
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px dashed #d1d5db;
+  }
+  .summary .sm-row { display: flex; gap: 10px; margin-bottom: 3px; }
+  .summary .sm-label {
+    min-width: 130px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .summary .sm-value { flex: 1; color: var(--text); }
+  .summary .sm-value.empty { color: var(--danger); font-weight: 500; }
+  .summary .sm-value.multiline { white-space: pre-wrap; }
+
+  .warning-box {
+    background: var(--warn-bg);
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: var(--danger);
+    font-size: 13.5px;
+    margin-bottom: 16px;
+  }
+  .warning-box ul { margin: 6px 0 0 18px; padding: 0; }
+
+  /* 단계 숨김 */
+  .step-content { display: none; }
+  .step-content.active { display: block; }
+
+  /* 푸터 안내 */
+  .footer-info {
+    margin-top: 20px;
+    font-size: 12.5px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.7;
+  }
+
+  /* ===================== PRINT ===================== */
+  @media print {
+    @page {
+      size: A4 portrait;
+      margin: 18mm 16mm;
+    }
+    html, body {
+      background: #fff !important;
+      font-size: 11pt;
+      color: #000 !important;
+    }
+    .wrap { max-width: none; padding: 0; }
+    .header-info, .notice, .stepper, .nav, .footer-info,
+    button, .warning-box, .hint, .print-hide { display: none !important; }
+
+    .step-content { display: block !important; page-break-inside: avoid; }
+    .card { display: none; }
+
+    .print-only { display: block !important; }
+    .print-doc {
+      color: #000;
+      font-family: "Apple SD Gothic Neo", "Noto Sans KR", "맑은 고딕", "Malgun Gothic", sans-serif;
+    }
+    .print-doc h1.print-title {
+      text-align: center;
+      font-size: 17pt;
+      margin: 0 0 6px;
+      letter-spacing: -0.3px;
+    }
+    .print-doc .print-sub {
+      text-align: center;
+      font-size: 10pt;
+      color: #444;
+      margin-bottom: 14px;
+    }
+    .print-doc .print-date {
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: 9.5pt;
+      color: #555;
+    }
+    .print-doc .print-section {
+      margin-bottom: 12px;
+      page-break-inside: avoid;
+    }
+    .print-doc .print-section h2 {
+      font-size: 12pt;
+      margin: 0 0 6px;
+      padding: 4px 0 4px;
+      border-bottom: 1.2px solid #000;
+    }
+    .print-doc table.print-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5pt;
+    }
+    .print-doc table.print-table td {
+      padding: 5px 6px;
+      vertical-align: top;
+      border-bottom: 1px dotted #bbb;
+    }
+    .print-doc table.print-table td.lbl {
+      width: 32%;
+      font-weight: 700;
+      background: #f5f5f5;
+      border-bottom: 1px solid #ddd;
+    }
+    .print-doc .print-block {
+      margin-top: 4px;
+      font-size: 10.5pt;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+    .print-doc .print-radio-list {
+      list-style: none;
+      padding: 0;
+      margin: 2px 0;
+      font-size: 10.5pt;
+    }
+    .print-doc .print-radio-list li { margin-bottom: 2px; }
+    .print-doc .print-radio-list li.selected {
+      font-weight: 700;
+      color: #000;
+    }
+    .print-doc .print-radio-list li:not(.selected) {
+      color: #888;
+    }
+    .print-doc .print-agree {
+      font-size: 10.5pt;
+      margin: 6px 0;
+      font-weight: 600;
+    }
+    .print-doc .print-empty { color: #888; }
+  }
+
+  .print-only { display: none; }
+</style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
-  <div class="p-4 md:p-8">
-    <div class="max-w-6xl mx-auto">
-      <!-- 헤더 -->
-      <div class="mb-6 text-center">
-        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">📋 개별화교육계획(IEP) 작성 도우미</h1>
-        <p class="text-gray-600">초등학교(공통교육과정) 특수교육대상학생 개별화교육계획 작성 지원도구</p>
-      </div>
+<body>
+<div class="wrap">
 
-      <!-- 로딩 -->
-      <div id="loading-view" class="bg-white rounded-xl p-6 shadow-sm text-center">
-        <i data-lucide="loader-2" class="animate-spin mx-auto text-indigo-600 mb-3" style="width:32px;height:32px"></i>
-        <p class="text-gray-600">성취기준 데이터를 불러오는 중...</p>
-      </div>
-
-      <!-- 에러 -->
-      <div id="error-view" class="hidden bg-red-50 border border-red-200 rounded-xl p-6">
-        <p class="text-red-700 font-medium">⚠️ 성취기준 데이터를 불러올 수 없습니다.</p>
-        <p id="error-msg" class="text-sm text-red-600 mt-2"></p>
-        <p class="text-sm text-red-600 mt-2">인터넷 연결을 확인하거나, 잠시 후 다시 시도해 주세요.</p>
-      </div>
-
-      <!-- 메인 -->
-      <div id="main-view" class="hidden">
-        <!-- 탭 -->
-        <div class="flex gap-2 mb-6 bg-white rounded-xl p-2 shadow-sm">
-          <button id="tab-iep" class="tab-btn flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium bg-indigo-600 text-white shadow-md">
-            <i data-lucide="file-text" style="width:20px;height:20px"></i> IEP 작성
-          </button>
-          <button id="tab-checklist" class="tab-btn flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium text-gray-600 hover:bg-gray-100">
-            <i data-lucide="check-square" style="width:20px;height:20px"></i> 진보점검 체크리스트
-          </button>
-        </div>
-
-        <!-- IEP 탭 -->
-        <div id="iep-panel" class="space-y-6">
-          <!-- 액션바 -->
-          <div class="bg-white rounded-xl p-3 shadow-sm flex flex-wrap items-center gap-2">
-            <button onclick="openSaveDialog('iep')" class="flex items-center gap-1.5 px-3 py-2 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200">
-              <i data-lucide="save" style="width:16px;height:16px"></i> 저장
-            </button>
-            <button onclick="openLoadDialog('iep')" class="flex items-center gap-1.5 px-3 py-2 text-sm bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200">
-              <i data-lucide="folder-open" style="width:16px;height:16px"></i> 불러오기 (<span id="iep-saved-count">0</span>)
-            </button>
-            <button onclick="resetForm('iep')" class="flex items-center gap-1.5 px-3 py-2 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200">
-              <i data-lucide="rotate-ccw" style="width:16px;height:16px"></i> 초기화
-            </button>
-            <span id="iep-status" class="ml-2 text-sm text-indigo-600 font-medium hidden"></span>
-          </div>
-
-          <!-- 입력 폼 -->
-          <div class="bg-white rounded-xl p-6 shadow-sm">
-            <h2 class="text-xl font-bold mb-4">📝 학생 정보 입력</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <div>
-                <label class="block text-sm font-medium mb-1">학기 *</label>
-                <input id="f-semester" type="text" placeholder="예: 2026학년도 1학기" class="w-full px-3 py-2 border rounded-lg" />
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">학년 *</label>
-                <select id="f-grade" class="w-full px-3 py-2 border rounded-lg">
-                  <option value="">선택</option>
-                  <option value="1">초등학교 1학년</option>
-                  <option value="2">초등학교 2학년</option>
-                  <option value="3">초등학교 3학년</option>
-                  <option value="4">초등학교 4학년</option>
-                  <option value="5">초등학교 5학년</option>
-                  <option value="6">초등학교 6학년</option>
-                </select>
-              </div>
-            </div>
-            <div class="mb-4">
-              <label class="block text-sm font-medium mb-2">영역 유형 *</label>
-              <div class="flex gap-3">
-                <button type="button" id="type-curriculum" class="type-btn flex-1 py-2 px-4 rounded-lg border-2 border-indigo-600 bg-indigo-50 text-indigo-700 font-medium">📚 교과</button>
-                <button type="button" id="type-functional" class="type-btn flex-1 py-2 px-4 rounded-lg border-2 border-gray-200">🌱 생활기능</button>
-              </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <div id="subject-wrap">
-                <label class="block text-sm font-medium mb-1">교과 *</label>
-                <select id="f-subject" disabled class="w-full px-3 py-2 border rounded-lg disabled:bg-gray-100">
-                  <option value="">먼저 학년 선택</option>
-                </select>
-              </div>
-              <div id="custom-subject-wrap" class="hidden">
-                <label class="block text-sm font-medium mb-1">생활기능 영역 *</label>
-                <input id="f-custom-subject" type="text" placeholder="예: 사회성, 의사소통" class="w-full px-3 py-2 border rounded-lg" />
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">세부 영역 (선택)</label>
-                <input id="f-area" type="text" placeholder="예: 읽기, 수와 연산" class="w-full px-3 py-2 border rounded-lg" />
-              </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <div>
-                <label class="block text-sm font-medium mb-1">강점 *</label>
-                <textarea id="f-strengths" rows="4" class="w-full px-3 py-2 border rounded-lg"></textarea>
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">요구 *</label>
-                <textarea id="f-needs" rows="4" class="w-full px-3 py-2 border rounded-lg"></textarea>
-              </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <div>
-                <label class="block text-sm font-medium mb-1">이전 평가/검사 결과 (선택)</label>
-                <textarea id="f-assessment" rows="3" class="w-full px-3 py-2 border rounded-lg"></textarea>
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">추가 메모 (선택)</label>
-                <textarea id="f-notes" rows="3" class="w-full px-3 py-2 border rounded-lg"></textarea>
-              </div>
-            </div>
-            <div id="iep-error" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
-              <i data-lucide="alert-circle" class="text-red-600 flex-shrink-0 mt-0.5" style="width:18px;height:18px"></i>
-              <p id="iep-error-msg" class="text-sm text-red-700"></p>
-            </div>
-            <button id="generate-btn" onclick="generateIEP()" class="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-indigo-700 disabled:bg-gray-400 flex items-center justify-center gap-2">
-              <span id="generate-text">✨ IEP 생성하기</span>
-            </button>
-          </div>
-
-          <!-- 결과 -->
-          <div id="iep-result" class="hidden"></div>
-        </div>
-
-        <!-- 체크리스트 탭 -->
-        <div id="checklist-panel" class="hidden space-y-6">
-          <div class="bg-white rounded-xl p-3 shadow-sm flex flex-wrap items-center gap-2">
-            <button onclick="openSaveDialog('checklist')" class="flex items-center gap-1.5 px-3 py-2 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200">
-              <i data-lucide="save" style="width:16px;height:16px"></i> 저장
-            </button>
-            <button onclick="openLoadDialog('checklist')" class="flex items-center gap-1.5 px-3 py-2 text-sm bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200">
-              <i data-lucide="folder-open" style="width:16px;height:16px"></i> 불러오기 (<span id="cl-saved-count">0</span>)
-            </button>
-            <button onclick="resetForm('checklist')" class="flex items-center gap-1.5 px-3 py-2 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200">
-              <i data-lucide="rotate-ccw" style="width:16px;height:16px"></i> 초기화
-            </button>
-            <span id="cl-status" class="ml-2 text-sm text-indigo-600 font-medium hidden"></span>
-          </div>
-
-          <div class="bg-white rounded-xl p-6 shadow-sm">
-            <h2 class="text-xl font-bold mb-2">✅ 진보점검 체크리스트 생성</h2>
-            <p class="text-sm text-gray-600 mb-4">IEP 단기목표의 달성도를 회기별로 점검합니다.</p>
-            <div class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium mb-1">학생 정보 (선택)</label>
-                <input id="cl-student-info" type="text" placeholder="예: 3학년 1반" class="w-full px-3 py-2 border rounded-lg" />
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">과목/영역 *</label>
-                <input id="cl-subject" type="text" placeholder="예: 국어(읽기), 사회성" class="w-full px-3 py-2 border rounded-lg" />
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">장기목표 *</label>
-                <textarea id="cl-long-goal" rows="2" class="w-full px-3 py-2 border rounded-lg"></textarea>
-              </div>
-              <div>
-                <div class="flex items-center justify-between mb-1">
-                  <label class="block text-sm font-medium">단기목표 *</label>
-                  <button onclick="addShortGoal()" class="flex items-center gap-1 text-sm text-indigo-600">
-                    <i data-lucide="plus" style="width:14px;height:14px"></i> 추가
-                  </button>
-                </div>
-                <div id="cl-short-goals" class="space-y-2"></div>
-              </div>
-              <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-sm font-medium mb-1">평가 주기</label>
-                  <select id="cl-period" class="w-full px-3 py-2 border rounded-lg">
-                    <option value="주별">주별</option>
-                    <option value="격주">격주</option>
-                    <option value="월별" selected>월별</option>
-                    <option value="분기별">분기별</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium mb-1">평가 회기 수</label>
-                  <select id="cl-sessions" class="w-full px-3 py-2 border rounded-lg">
-                    <option value="2">2회기</option>
-                    <option value="3">3회기</option>
-                    <option value="4" selected>4회기</option>
-                    <option value="5">5회기</option>
-                    <option value="6">6회기</option>
-                    <option value="8">8회기</option>
-                    <option value="10">10회기</option>
-                    <option value="12">12회기</option>
-                  </select>
-                </div>
-              </div>
-              <button onclick="generateChecklist()" class="w-full bg-indigo-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-indigo-700">📋 체크리스트 생성하기</button>
-            </div>
-          </div>
-
-          <div id="cl-result" class="hidden"></div>
-        </div>
-      </div>
-
-      <!-- 푸터 -->
-      <div class="mt-8 text-center text-sm text-gray-500 space-y-1">
-        <p>※ 본 도구는 IEP 초안 작성을 돕는 보조 도구입니다. 실제 IEP는 교사의 전문적 판단에 따라 수정·보완하여 사용해 주세요.</p>
-        <p class="text-gray-400">만든 사람: 김점례 (instagram <a href="https://www.instagram.com/jeomrye_sptc" target="_blank" rel="noopener noreferrer" class="text-indigo-500 hover:underline">@jeomrye_sptc</a>)</p>
-      </div>
+  <!-- ============ 화면용: 상단 안내 ============ -->
+  <div class="header-info">
+    <h1>2026 장애학생 스포츠체험 가족캠프</h1>
+    <div class="meta">
+      <div><strong>일시</strong> · 2026. 8. 10.(월) ~ 8. 11.(화) / 1박 2일</div>
+      <div><strong>장소</strong> · 경기도청소년수련원 (경기 안산시 단원구 선감로 255 / 대부도)</div>
+      <div><strong>주관</strong> · 광주시장애인체육회, 중도중복장애교육연구회</div>
     </div>
   </div>
 
-  <!-- 다이얼로그 -->
-  <div id="dialog-bg" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onclick="closeDialog(event)">
-    <div class="bg-white rounded-xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto" onclick="event.stopPropagation()">
-      <div class="flex items-center justify-between mb-4">
-        <h3 id="dialog-title" class="text-lg font-bold"></h3>
-        <button onclick="closeDialog()"><i data-lucide="x" style="width:20px;height:20px"></i></button>
+  <div class="notice">
+    본 캠프에서 장애학생과 가족을 지원할 <strong>자원봉사자 신청서</strong>입니다.<br>
+    입력 후 PDF로 저장하여 안내된 이메일로 제출해주세요.<br>
+    입력하신 내용은 본인 기기에만 임시 저장되며, 서버로 전송되지 않습니다.
+  </div>
+
+  <!-- 진행 표시 -->
+  <div class="stepper" role="tablist">
+    <div class="step-pill active" id="pill-1">1. 기본 정보</div>
+    <div class="step-pill" id="pill-2">2. 자기소개</div>
+    <div class="step-pill" id="pill-3">3. 확인·출력</div>
+  </div>
+
+  <!-- ============ Step 1 ============ -->
+  <div class="step-content active card" id="step-1">
+    <h2>1단계. 기본 정보</h2>
+
+    <div class="row-2">
+      <div class="field">
+        <label class="field-label" for="f-name">성명<span class="req">*</span></label>
+        <input type="text" id="f-name" autocomplete="name" placeholder="예: 홍길동">
       </div>
-      <div id="dialog-body"></div>
+      <div class="field">
+        <label class="field-label" for="f-rrn">주민등록번호<span class="req">*</span></label>
+        <input type="text" id="f-rrn" inputmode="numeric" maxlength="14" placeholder="000000-0000000">
+        <div class="hint">단체 상해보험 가입 및 1365 자원봉사 시간 등록에 사용됩니다.</div>
+      </div>
+    </div>
+
+    <div class="row-2">
+      <div class="field">
+        <label class="field-label" for="f-phone">연락처(휴대전화)<span class="req">*</span></label>
+        <input type="tel" id="f-phone" inputmode="tel" placeholder="010-0000-0000">
+      </div>
+      <div class="field">
+        <label class="field-label" for="f-email">이메일<span class="req">*</span></label>
+        <input type="email" id="f-email" autocomplete="email" placeholder="example@email.com">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="f-affil-type">소속<span class="req">*</span></label>
+      <div class="affiliation-grid">
+        <select id="f-affil-type">
+          <option value="">-- 선택 --</option>
+          <option>대학교 재학생</option>
+          <option>대학원 재학생</option>
+          <option>졸업생·일반</option>
+          <option>기타</option>
+        </select>
+        <input type="text" id="f-affil-detail" placeholder="예: ○○대학교 특수체육학과 3학년">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="f-region">거주 지역<span class="req">*</span></label>
+      <input type="text" id="f-region" placeholder="예: 성남시 분당구">
+      <div class="hint">카풀 가능 여부 판단에 참고됩니다.</div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">집결 장소까지 자력 이동 가능 여부<span class="req">*</span></label>
+      <div class="radio-group" id="g-transport">
+        <label class="radio-item"><input type="radio" name="transport" value="가능"> 가능</label>
+        <label class="radio-item"><input type="radio" name="transport" value="카풀 지원이 있다면 가능"> 카풀 지원이 있다면 가능</label>
+        <label class="radio-item"><input type="radio" name="transport" value="어려움"> 어려움</label>
+      </div>
+      <div class="hint">캠프 장소는 안산 대부도이며, 집결 장소(추후 안내)까지 자력으로 이동 가능한 분을 우선합니다. 카풀 가능 여부는 신청 인원 분포에 따라 개별 안내됩니다.</div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">1박 2일 전체 참여 가능 여부<span class="req">*</span></label>
+      <div class="radio-group" id="g-attend">
+        <label class="radio-item"><input type="radio" name="attend" value="가능 (8/10 09:30 ~ 8/11 12:00 전체)"> 가능 (8/10 09:30 ~ 8/11 12:00 전체)</label>
+        <label class="radio-item"><input type="radio" name="attend" value="부분 참여 가능"> 부분 참여 가능</label>
+      </div>
+      <div id="partial-wrap" style="display:none; margin-top:10px;">
+        <input type="text" id="f-partial" placeholder="가능한 시간대를 입력해주세요 (예: 8/10 종일 가능, 8/11 오전 어려움)">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">사전 교육 참여 가능<span class="req">*</span></label>
+      <label class="check-item" id="ci-pretrain">
+        <input type="checkbox" id="f-pretrain">
+        <span>가능 (7월 중 온라인 줌, 약 1~2시간)</span>
+      </label>
+      <div class="hint">사전 교육은 필수이며, 후보 일정은 추후 개별 안내됩니다.</div>
+    </div>
+
+    <div id="warn-1" class="warning-box" style="display:none;"></div>
+
+    <div class="nav">
+      <span></span>
+      <button class="primary" onclick="goNext(1)">다음 →</button>
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <!-- ============ Step 2 ============ -->
+  <div class="step-content card" id="step-2">
+    <h2>2단계. 자기소개</h2>
+
+    <div class="field">
+      <label class="field-label" for="f-motive">지원 동기<span class="req">*</span></label>
+      <textarea id="f-motive" rows="5" placeholder="예: 특수체육 전공자로서 현장 경험을 쌓고 싶고, 장애학생 가족이 함께하는 캠프라는 점에 의미를 느껴 지원합니다."></textarea>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="f-experience">관련 경험<span class="req">*</span></label>
+      <textarea id="f-experience" rows="5" placeholder="예: 장애학생 멘토링 6개월, ○○복지관 자원봉사 2회, 특수체육 수업 보조 등 (없으시면 '없음'으로 작성해주세요)"></textarea>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="f-strength">보유 자격·강점 <span style="color:var(--muted); font-weight:400; font-size:12.5px;">(선택)</span></label>
+      <textarea id="f-strength" rows="3" placeholder="예: 응급처치 자격증, 수어 가능, 차량 운전 가능, 특정 스포츠 경험 등"></textarea>
+    </div>
+
+    <div class="field">
+      <label class="field-label">희망 역할 <span style="color:var(--muted); font-weight:400; font-size:12.5px;">(다중 선택, 선택)</span></label>
+      <div class="check-group" id="g-roles">
+        <label class="check-item"><input type="checkbox" name="role" value="조별 학생 지원 (조당 봉사자 1명, 일과 전반 동행)"> 조별 학생 지원 (조당 봉사자 1명, 일과 전반 동행)</label>
+        <label class="check-item"><input type="checkbox" name="role" value="스포츠 체험 진행 보조"> 스포츠 체험 진행 보조</label>
+        <label class="check-item"><input type="checkbox" name="role" value="팀빌딩·레크리에이션 보조"> 팀빌딩·레크리에이션 보조</label>
+        <label class="check-item"><input type="checkbox" name="role" value="안전·이동 지원"> 안전·이동 지원</label>
+        <label class="check-item"><input type="checkbox" name="role" value="사진·기록"> 사진·기록</label>
+        <label class="check-item"><input type="checkbox" name="role" value="상관없음 / 운영진 배정에 따름"> 상관없음 / 운영진 배정에 따름</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="f-note">특이사항 <span style="color:var(--muted); font-weight:400; font-size:12.5px;">(선택)</span></label>
+      <textarea id="f-note" rows="3" placeholder="음식 알레르기, 건강상 유의사항, 기타 운영진이 알아야 할 사항"></textarea>
+    </div>
+
+    <div id="warn-2" class="warning-box" style="display:none;"></div>
+
+    <div class="nav">
+      <button onclick="goPrev(2)">← 이전</button>
+      <button class="primary" onclick="goNext(2)">다음 →</button>
+    </div>
+  </div>
+
+  <!-- ============ Step 3 ============ -->
+  <div class="step-content card" id="step-3">
+    <h2>3단계. 확인 및 출력</h2>
+
+    <!-- 3-1 활동 안내 -->
+    <div class="field">
+      <label class="field-label">3-1. 자원봉사 활동 안내 확인<span class="req">*</span></label>
+      <div class="agree-box">
+        <p>본인은 아래 내용을 확인하였으며, 자원봉사자로서 책임감 있게 활동에 참여할 것을 약속합니다.</p>
+        <ul>
+          <li>캠프 기간 중 운영진의 안내에 따라 배정된 역할을 수행합니다.</li>
+          <li>참가자(장애학생 및 가족)의 안전과 인권을 최우선으로 합니다.</li>
+          <li>활동 중 알게 된 참가자의 개인정보를 외부에 유출하지 않습니다.</li>
+          <li>사전 교육에 반드시 참여합니다.</li>
+          <li>부득이한 사정으로 참여가 어려워질 경우 즉시 운영진에 알립니다.</li>
+        </ul>
+      </div>
+      <label class="agree-check" id="ac-1">
+        <input type="checkbox" id="f-agree1">
+        <span>위 내용을 확인하였습니다.</span>
+      </label>
+    </div>
+
+    <!-- 3-2 개인정보 동의 -->
+    <div class="field">
+      <label class="field-label">3-2. 개인정보 수집·이용 동의<span class="req">*</span></label>
+      <div class="agree-box">
+        <p>개인정보보호법 제22조 및 시행령 제17조, 시행규칙 제4조 개정에 의거 귀하의 개인정보에 대해 이용 목적과 보유 기간을 알리고, 정보주체가 명확하게 인지할 수 있도록 각각의 동의사항을 구분하여 동의를 받도록 하고 있습니다.</p>
+        <p><strong>· 수집·이용·제공 목적</strong><br>2026 장애학생 스포츠체험 가족캠프 자원봉사자 선정 및 보험가입, 1365 자원봉사 시간 등록(광주시장애인체육회 및 경기도장애인체육회), 자원봉사 활동 관련 연락 수단으로 활용</p>
+        <p><strong>· 수집·이용·제공 항목</strong><br>필수항목(고유식별정보) — 성명, 주민등록번호, 연락처, 소속·거주지 등</p>
+        <p><strong>· 개인정보 보유 및 이용 기간</strong><br>수집된 항목은 이용 목적 이외의 용도로 활용되지 않으며, 보유기간(가족캠프 사업 종료 시) 이후 자동 삭제 및 파기됨을 알려드립니다.</p>
+        <p style="margin-top:8px;"><strong>위와 같이 개인정보를 수집·이용하는 데 동의하십니까? (미동의 시 참여에 제한이 있습니다.)</strong></p>
+      </div>
+      <label class="agree-check" id="ac-2">
+        <input type="checkbox" id="f-agree2">
+        <span>개인정보 수집·이용에 동의합니다.</span>
+      </label>
+    </div>
+
+    <!-- 3-3 사진·영상 동의 -->
+    <div class="field">
+      <label class="field-label">3-3. 사진·영상 촬영 및 활용 동의 <span style="color:var(--muted); font-weight:400; font-size:12.5px;">(선택)</span></label>
+      <div class="agree-box">
+        <p>2026 장애학생 스포츠체험 가족캠프 진행 중 촬영된 사진·영상이 다음 용도로 활용되는 데 동의합니다.</p>
+        <ul>
+          <li><strong>활용 목적</strong>: 캠프 결과보고서 작성, 사업 홍보 자료(SNS·홈페이지·인쇄물 등)</li>
+          <li><strong>활용 기간</strong>: 동의 철회 시까지</li>
+          <li><strong>미동의 시</strong>: 사진·영상에서 본인이 식별되지 않도록 처리됩니다.</li>
+        </ul>
+      </div>
+      <label class="agree-check" id="ac-3">
+        <input type="checkbox" id="f-agree3">
+        <span>사진·영상 활용에 동의합니다.</span>
+      </label>
+    </div>
+
+    <!-- 3-4 요약 -->
+    <div class="field">
+      <label class="field-label">3-4. 입력 내용 요약</label>
+      <div class="summary" id="summary-area">
+        <em style="color:var(--muted);">'다음' 버튼을 눌러 이 단계로 이동하면 자동으로 요약됩니다.</em>
+      </div>
+    </div>
+
+    <div id="warn-3" class="warning-box" style="display:none;"></div>
+
+    <!-- 3-5 PDF -->
+    <div class="field">
+      <label class="field-label">3-5. PDF 저장</label>
+      <button class="primary big" onclick="printPDF()">📄 PDF로 저장하기</button>
+      <div class="hint" style="margin-top:8px; text-align:center;">
+        인쇄 대화상자가 열리면 '대상'에서 'PDF로 저장'을 선택해주세요.<br>
+        저장 후 안내된 운영진 이메일로 첨부해 제출해주시면 됩니다.
+      </div>
+    </div>
+
+    <div class="nav">
+      <button onclick="goPrev(3)">← 이전</button>
+      <span></span>
+    </div>
+  </div>
+
+  <div class="footer-info">
+    입력하신 내용은 본인 기기에만 임시 저장되며, 서버로 전송되지 않습니다.<br>
+    PDF로 저장하신 후 안내된 운영진 이메일로 첨부해 보내주세요.
+  </div>
+
+</div>
+
+<!-- ============ PDF 전용 출력 영역 ============ -->
+<div class="print-only print-doc" id="print-doc" style="position:relative;">
+  <div class="print-date" id="p-date"></div>
+  <h1 class="print-title">2026 장애학생 스포츠체험 가족캠프 자원봉사자 신청서</h1>
+  <div class="print-sub">
+    일시 2026. 8. 10.(월) ~ 8. 11.(화) · 장소 경기도청소년수련원(안산 대부도) ·
+    주관 광주시장애인체육회, 중도중복장애교육연구회
+  </div>
+
+  <div class="print-section">
+    <h2>1. 기본 정보</h2>
+    <table class="print-table">
+      <tr><td class="lbl">성명</td><td id="p-name"></td></tr>
+      <tr><td class="lbl">주민등록번호</td><td id="p-rrn"></td></tr>
+      <tr><td class="lbl">연락처</td><td id="p-phone"></td></tr>
+      <tr><td class="lbl">이메일</td><td id="p-email"></td></tr>
+      <tr><td class="lbl">소속</td><td id="p-affil"></td></tr>
+      <tr><td class="lbl">거주 지역</td><td id="p-region"></td></tr>
+      <tr><td class="lbl">집결 장소 자력 이동</td><td id="p-transport"></td></tr>
+      <tr><td class="lbl">1박 2일 전체 참여</td><td id="p-attend"></td></tr>
+      <tr><td class="lbl">사전 교육 참여</td><td id="p-pretrain"></td></tr>
+    </table>
+  </div>
+
+  <div class="print-section">
+    <h2>2. 자기소개</h2>
+    <table class="print-table">
+      <tr><td class="lbl">지원 동기</td><td><div class="print-block" id="p-motive"></div></td></tr>
+      <tr><td class="lbl">관련 경험</td><td><div class="print-block" id="p-experience"></div></td></tr>
+      <tr><td class="lbl">보유 자격·강점</td><td><div class="print-block" id="p-strength"></div></td></tr>
+      <tr><td class="lbl">희망 역할</td><td><div class="print-block" id="p-roles"></div></td></tr>
+      <tr><td class="lbl">특이사항</td><td><div class="print-block" id="p-note"></div></td></tr>
+    </table>
+  </div>
+
+  <div class="print-section">
+    <h2>3. 동의 사항</h2>
+    <div class="print-agree" id="p-agree1"></div>
+    <div class="print-agree" id="p-agree2"></div>
+    <div class="print-agree" id="p-agree3"></div>
+  </div>
+
+  <div class="print-section" style="margin-top:18px; border-top:1px solid #999; padding-top:10px; font-size:10pt;">
+    <table style="width:100%;">
+      <tr>
+        <td>위와 같이 자원봉사자로 신청합니다.</td>
+        <td style="text-align:right;">
+          신청일자: <span id="p-date2"></span><br>
+          신청인: <span id="p-name2"></span> (서명/인)
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<script>
+  // ===== 상태 =====
+  let currentStep = 1;
+  let userInteracted = false;
+
+  // ===== 페이지 이탈 방지 =====
+  document.addEventListener('input', () => { userInteracted = true; });
+  document.addEventListener('change', () => { userInteracted = true; });
+  window.addEventListener('beforeunload', (e) => {
+    if (userInteracted) {
+      e.preventDefault();
+      e.returnValue = '입력하신 내용이 사라질 수 있습니다. 정말 나가시겠습니까?';
+      return e.returnValue;
+    }
+  });
+
+  // ===== 주민등록번호 입력 정규화 =====
+  const rrnInput = document.getElementById('f-rrn');
+  rrnInput.addEventListener('input', (e) => {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 13);
+    if (v.length > 6) v = v.slice(0,6) + '-' + v.slice(6);
+    e.target.value = v;
+  });
+
+  // ===== 휴대전화 입력 정규화 =====
+  const phoneInput = document.getElementById('f-phone');
+  phoneInput.addEventListener('input', (e) => {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 11);
+    if (v.length >= 7) v = v.slice(0,3) + '-' + v.slice(3,7) + '-' + v.slice(7);
+    else if (v.length >= 4) v = v.slice(0,3) + '-' + v.slice(3);
+    e.target.value = v;
+  });
+
+  // ===== 부분 참여 토글 =====
+  document.querySelectorAll('input[name="attend"]').forEach(r => {
+    r.addEventListener('change', () => {
+      const partial = document.querySelector('input[name="attend"]:checked')?.value === '부분 참여 가능';
+      document.getElementById('partial-wrap').style.display = partial ? 'block' : 'none';
+    });
+  });
+
+  // ===== 라디오·체크 스타일 동기화 =====
+  function syncRadioStyles() {
+    document.querySelectorAll('.radio-item').forEach(item => {
+      const input = item.querySelector('input');
+      item.classList.toggle('checked', input.checked);
+    });
+    document.querySelectorAll('.check-item').forEach(item => {
+      const input = item.querySelector('input');
+      item.classList.toggle('checked', input.checked);
+    });
+    ['ac-1','ac-2','ac-3'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('checked', el.querySelector('input').checked);
+    });
+  }
+  document.addEventListener('change', syncRadioStyles);
+
+  // ===== 단계 이동 =====
+  function showStep(n) {
+    [1,2,3].forEach(i => {
+      document.getElementById('step-' + i).classList.toggle('active', i === n);
+      const pill = document.getElementById('pill-' + i);
+      pill.classList.remove('active', 'done');
+      if (i === n) pill.classList.add('active');
+      else if (i < n) pill.classList.add('done');
+    });
+    currentStep = n;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goPrev(from) { showStep(from - 1); }
+
+  function goNext(from) {
+    const errors = validateStep(from);
+    const warnBox = document.getElementById('warn-' + from);
+    if (errors.length) {
+      warnBox.innerHTML = '<strong>아래 항목을 확인해주세요.</strong><ul>' +
+        errors.map(e => '<li>' + e + '</li>').join('') + '</ul>';
+      warnBox.style.display = 'block';
+      return;
+    }
+    warnBox.style.display = 'none';
+
+    if (from === 2) renderSummary();
+    showStep(from + 1);
+    if (from === 2) renderSummary();
+  }
+
+  // ===== 검증 =====
+  function setInvalid(id, isInvalid) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('invalid', isInvalid);
+  }
+
+  function validateStep(step) {
+    const errs = [];
+
+    if (step === 1) {
+      const checks = [
+        ['f-name', '성명을 입력해주세요.'],
+        ['f-phone', '연락처를 입력해주세요.'],
+        ['f-email', '이메일을 입력해주세요.'],
+        ['f-affil-type', '소속 유형을 선택해주세요.'],
+        ['f-affil-detail', '소속 상세(학교·학과·학년 등)를 입력해주세요.'],
+        ['f-region', '거주 지역을 입력해주세요.']
+      ];
+      checks.forEach(([id, msg]) => {
+        const v = document.getElementById(id).value.trim();
+        if (!v) { errs.push(msg); setInvalid(id, true); }
+        else setInvalid(id, false);
+      });
+
+      // 주민번호
+      const rrnVal = document.getElementById('f-rrn').value.trim();
+      const rrnClean = rrnVal.replace(/\D/g, '');
+      if (!rrnClean) {
+        errs.push('주민등록번호를 입력해주세요.');
+        setInvalid('f-rrn', true);
+      } else if (!/^\d{6}-?\d{7}$/.test(rrnVal) || rrnClean.length !== 13) {
+        errs.push('주민등록번호는 13자리 숫자로 입력해주세요. (예: 000000-0000000)');
+        setInvalid('f-rrn', true);
+      } else setInvalid('f-rrn', false);
+
+      // 이메일 형식
+      const emailVal = document.getElementById('f-email').value.trim();
+      if (emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+        errs.push('이메일 형식이 올바르지 않습니다.');
+        setInvalid('f-email', true);
+      }
+
+      // 라디오
+      if (!document.querySelector('input[name="transport"]:checked'))
+        errs.push('집결 장소까지 이동 가능 여부를 선택해주세요.');
+      const attend = document.querySelector('input[name="attend"]:checked');
+      if (!attend) errs.push('1박 2일 참여 가능 여부를 선택해주세요.');
+      else if (attend.value === '부분 참여 가능') {
+        const p = document.getElementById('f-partial').value.trim();
+        if (!p) {
+          errs.push('부분 참여 가능 시간대를 입력해주세요.');
+          setInvalid('f-partial', true);
+        } else setInvalid('f-partial', false);
+      }
+
+      if (!document.getElementById('f-pretrain').checked)
+        errs.push('사전 교육 참여 가능에 체크해주세요. (필수)');
+    }
+
+    if (step === 2) {
+      const checks = [
+        ['f-motive', '지원 동기를 입력해주세요.'],
+        ['f-experience', '관련 경험을 입력해주세요. (없으면 \'없음\'으로 작성)']
+      ];
+      checks.forEach(([id, msg]) => {
+        const v = document.getElementById(id).value.trim();
+        if (!v) { errs.push(msg); setInvalid(id, true); }
+        else setInvalid(id, false);
+      });
+    }
+
+    return errs;
+  }
+
+  // ===== 요약 렌더 =====
+  function val(id) { return (document.getElementById(id)?.value || '').trim(); }
+  function maskRRN(v) {
+    const c = v.replace(/\D/g, '');
+    if (c.length !== 13) return v || '(미입력)';
+    return c.slice(0,6) + '-' + c.slice(6,7) + '●●●●●●';
+  }
+  function fullRRN(v) {
+    const c = v.replace(/\D/g, '');
+    if (c.length !== 13) return v || '(미입력)';
+    return c.slice(0,6) + '-' + c.slice(6);
+  }
+
+  function getRoles() {
+    return Array.from(document.querySelectorAll('input[name="role"]:checked')).map(c => c.value);
+  }
+  function getTransport() { return document.querySelector('input[name="transport"]:checked')?.value || ''; }
+  function getAttend() {
+    const v = document.querySelector('input[name="attend"]:checked')?.value || '';
+    if (v === '부분 참여 가능') {
+      const t = val('f-partial');
+      return v + (t ? ' (' + t + ')' : '');
+    }
+    return v;
+  }
+
+  function row(label, value, multiline) {
+    const empty = !value || value === '';
+    const cls = empty ? 'sm-value empty' : ('sm-value' + (multiline ? ' multiline' : ''));
+    const display = empty ? '(미입력)' : value;
+    return '<div class="sm-row"><div class="sm-label">' + label + '</div>' +
+           '<div class="' + cls + '">' + escapeHtml(display) + '</div></div>';
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c =>
+      ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function renderSummary() {
+    const affil = val('f-affil-type') + (val('f-affil-detail') ? ' / ' + val('f-affil-detail') : '');
+    const rolesArr = getRoles();
+    const roles = rolesArr.length ? rolesArr.join(', ') : '';
+
+    let html = '';
+    html += '<div class="sm-section"><div class="sm-title">1. 기본 정보</div>';
+    html += row('성명', val('f-name'));
+    html += row('주민등록번호', val('f-rrn') ? maskRRN(val('f-rrn')) : '');
+    html += row('연락처', val('f-phone'));
+    html += row('이메일', val('f-email'));
+    html += row('소속', affil.trim() === '/' ? '' : affil);
+    html += row('거주 지역', val('f-region'));
+    html += row('자력 이동 가능', getTransport());
+    html += row('전체 참여 가능', getAttend());
+    html += row('사전 교육 참여', document.getElementById('f-pretrain').checked ? '가능' : '');
+    html += '</div>';
+
+    html += '<div class="sm-section"><div class="sm-title">2. 자기소개</div>';
+    html += row('지원 동기', val('f-motive'), true);
+    html += row('관련 경험', val('f-experience'), true);
+    html += row('보유 자격·강점', val('f-strength'), true);
+    html += row('희망 역할', roles);
+    html += row('특이사항', val('f-note'), true);
+    html += '</div>';
+
+    html += '<div class="sm-section"><div class="sm-title">3. 동의 사항</div>';
+    html += row('활동 안내 확인', document.getElementById('f-agree1').checked ? '확인함' : '');
+    html += row('개인정보 동의', document.getElementById('f-agree2').checked ? '동의함' : '');
+    html += row('사진·영상 동의', document.getElementById('f-agree3').checked ? '동의함' : '미동의');
+    html += '</div>';
+
+    document.getElementById('summary-area').innerHTML = html;
+  }
+
+  // ===== PDF 출력 =====
+  function checkBox(checked) { return checked ? '☑' : '☐'; }
+
+  function buildRadioList(group, selected) {
+    return '<ul class="print-radio-list">' +
+      group.map(g => '<li class="' + (g === selected ? 'selected' : '') +
+        '">' + checkBox(g === selected) + ' ' + escapeHtml(g) + '</li>').join('') +
+      '</ul>';
+  }
+
+  function buildCheckList(group, selectedArr) {
+    return '<ul class="print-radio-list">' +
+      group.map(g => {
+        const isSel = selectedArr.includes(g);
+        return '<li class="' + (isSel ? 'selected' : '') + '">' +
+          checkBox(isSel) + ' ' + escapeHtml(g) + '</li>';
+      }).join('') + '</ul>';
+  }
+
+  function fillEmpty(v) {
+    return v && v.trim() ? escapeHtml(v).replace(/\n/g, '<br>') :
+      '<span class="print-empty">(미입력)</span>';
+  }
+
+  function preparePrint() {
+    // 3단계까지 요약이 안 됐을 수 있으니 무조건 갱신
+    renderSummary();
+
+    // 날짜
+    const now = new Date();
+    const dateStr = now.getFullYear() + '. ' + (now.getMonth()+1) + '. ' + now.getDate() + '.';
+    document.getElementById('p-date').textContent = '작성일: ' + dateStr;
+    document.getElementById('p-date2').textContent = dateStr;
+
+    // 1단계
+    document.getElementById('p-name').innerHTML = fillEmpty(val('f-name'));
+    document.getElementById('p-name2').textContent = val('f-name') || '';
+    document.getElementById('p-rrn').innerHTML = val('f-rrn') ? escapeHtml(fullRRN(val('f-rrn'))) :
+      '<span class="print-empty">(미입력)</span>';
+    document.getElementById('p-phone').innerHTML = fillEmpty(val('f-phone'));
+    document.getElementById('p-email').innerHTML = fillEmpty(val('f-email'));
+
+    const affil = val('f-affil-type') + (val('f-affil-detail') ? ' / ' + val('f-affil-detail') : '');
+    document.getElementById('p-affil').innerHTML = (val('f-affil-type') || val('f-affil-detail')) ?
+      escapeHtml(affil) : '<span class="print-empty">(미입력)</span>';
+    document.getElementById('p-region').innerHTML = fillEmpty(val('f-region'));
+
+    const transport = ['가능', '카풀 지원이 있다면 가능', '어려움'];
+    document.getElementById('p-transport').innerHTML = buildRadioList(transport, getTransport());
+
+    const attend = ['가능 (8/10 09:30 ~ 8/11 12:00 전체)', '부분 참여 가능'];
+    const attendSel = document.querySelector('input[name="attend"]:checked')?.value || '';
+    let attendHtml = buildRadioList(attend, attendSel);
+    if (attendSel === '부분 참여 가능' && val('f-partial')) {
+      attendHtml += '<div style="font-size:10pt; margin-top:3px; padding-left:18px;">→ 가능 시간대: ' +
+        escapeHtml(val('f-partial')) + '</div>';
+    }
+    document.getElementById('p-attend').innerHTML = attendHtml;
+
+    document.getElementById('p-pretrain').innerHTML =
+      checkBox(document.getElementById('f-pretrain').checked) + ' 가능 (7월 중 온라인 줌, 약 1~2시간) ' +
+      (document.getElementById('f-pretrain').checked ? '<strong>· 참여함</strong>' : '<span class="print-empty">· 미체크</span>');
+
+    // 2단계
+    document.getElementById('p-motive').innerHTML = fillEmpty(val('f-motive'));
+    document.getElementById('p-experience').innerHTML = fillEmpty(val('f-experience'));
+    document.getElementById('p-strength').innerHTML = fillEmpty(val('f-strength'));
+
+    const roleOptions = [
+      '조별 학생 지원 (조당 봉사자 1명, 일과 전반 동행)',
+      '스포츠 체험 진행 보조',
+      '팀빌딩·레크리에이션 보조',
+      '안전·이동 지원',
+      '사진·기록',
+      '상관없음 / 운영진 배정에 따름'
+    ];
+    document.getElementById('p-roles').innerHTML = buildCheckList(roleOptions, getRoles());
+
+    document.getElementById('p-note').innerHTML = fillEmpty(val('f-note'));
+
+    // 3단계 동의
+    const a1 = document.getElementById('f-agree1').checked;
+    const a2 = document.getElementById('f-agree2').checked;
+    const a3 = document.getElementById('f-agree3').checked;
+    document.getElementById('p-agree1').innerHTML =
+      checkBox(a1) + ' 자원봉사 활동 안내 확인 <strong>(' + (a1 ? '확인함' : '미확인') + ')</strong>';
+    document.getElementById('p-agree2').innerHTML =
+      checkBox(a2) + ' 개인정보 수집·이용 동의 <strong>(' + (a2 ? '동의함' : '미동의') + ')</strong>';
+    document.getElementById('p-agree3').innerHTML =
+      checkBox(a3) + ' 사진·영상 촬영 및 활용 동의 <strong>(' + (a3 ? '동의함' : '미동의') + ')</strong>';
+  }
+
+  function printPDF() {
+    // 출력 전 필수 확인
+    const errs = [];
+    // 1, 2단계 검증을 한 번 더 돌림
+    const e1 = validateStep(1);
+    const e2 = validateStep(2);
+    if (e1.length) errs.push('1단계 미입력 항목이 있습니다.');
+    if (e2.length) errs.push('2단계 미입력 항목이 있습니다.');
+    if (!document.getElementById('f-agree1').checked) errs.push('자원봉사 활동 안내 확인이 필요합니다.');
+    if (!document.getElementById('f-agree2').checked) errs.push('개인정보 수집·이용 동의가 필요합니다.');
+
+    const warnBox = document.getElementById('warn-3');
+    if (errs.length) {
+      warnBox.innerHTML = '<strong>출력 전 아래 항목을 확인해주세요.</strong><ul>' +
+        errs.map(e => '<li>' + e + '</li>').join('') +
+        '</ul><div style="margin-top:6px;">'+
+        '이전 단계로 돌아가 미입력 항목을 채워주세요.</div>';
+      warnBox.style.display = 'block';
+      window.scrollTo({ top: warnBox.offsetTop - 20, behavior: 'smooth' });
+      return;
+    }
+    warnBox.style.display = 'none';
+
+    preparePrint();
+    // 페이지 이탈 경고 비활성화 (인쇄 후 다시 활성화 어려우므로 그대로 둠)
+    setTimeout(() => window.print(), 100);
+  }
+
+  // 초기 동기화
+  syncRadioStyles();
+</script>
+
 </body>
 </html>
