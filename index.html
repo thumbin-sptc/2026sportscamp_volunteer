@@ -694,7 +694,6 @@
     <h2>3. 동의 사항</h2>
     <div class="print-agree" id="p-agree1"></div>
     <div class="print-agree" id="p-agree2"></div>
-    <div class="print-agree" id="p-agree3"></div>
   </div>
 
   <div class="print-section" style="margin-top:18px; border-top:1px solid #999; padding-top:10px; font-size:10pt;">
@@ -1029,7 +1028,6 @@
     // 3단계 동의
     const a1 = document.getElementById('f-agree1').checked;
     const a2 = document.getElementById('f-agree2').checked;
-    const a3 = document.getElementById('f-agree3').checked;
     document.getElementById('p-agree1').innerHTML =
       checkBox(a1) + ' 자원봉사 활동 안내 확인 <strong>(' + (a1 ? '확인함' : '미확인') + ')</strong>';
     document.getElementById('p-agree2').innerHTML =
