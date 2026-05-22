@@ -941,7 +941,6 @@
     html += '<div class="sm-section"><div class="sm-title">3. 동의 사항</div>';
     html += row('활동 안내 확인', document.getElementById('f-agree1').checked ? '확인함' : '');
     html += row('개인정보 동의', document.getElementById('f-agree2').checked ? '동의함' : '');
-    html += row('사진·영상 동의', document.getElementById('f-agree3').checked ? '동의함' : '미동의');
     html += '</div>';
 
     document.getElementById('summary-area').innerHTML = html;
@@ -1035,8 +1034,6 @@
       checkBox(a1) + ' 자원봉사 활동 안내 확인 <strong>(' + (a1 ? '확인함' : '미확인') + ')</strong>';
     document.getElementById('p-agree2').innerHTML =
       checkBox(a2) + ' 개인정보 수집·이용 동의 <strong>(' + (a2 ? '동의함' : '미동의') + ')</strong>';
-    document.getElementById('p-agree3').innerHTML =
-      checkBox(a3) + ' 사진·영상 촬영 및 활용 동의 <strong>(' + (a3 ? '동의함' : '미동의') + ')</strong>';
   }
 
   function printPDF() {
